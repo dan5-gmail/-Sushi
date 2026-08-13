@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ja" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUSHI IS LIFE | 寿司絶対至上主義マニフェスト</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sushi: {
+                            red: '#ff2a4b',
+                            gold: '#ffd700',
+                            salmon: '#ff6b4a',
+                            tuna: '#d90429',
+                            dark: '#0a0a0c',
+                            panel: '#121218',
+                            wasabi: '#8ac926'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif JP"', 'serif'],
+                        sans: ['"Montserrat"', '"Inter"', 'sans-serif'],
+                        impact: ['"Zen Tokyo Zoo"', 'cursive', 'sans-serif']
+                    },
+                    animation: {
+                        'spin-slow': 'spin 20s linear infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(2deg)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(255, 42, 75, 0.6))' },
+                            '50%': { filter: 'drop-shadow(0 0 35px rgba(255, 215, 0, 0.9))' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800;0,900;1,900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Tokyo+Zoo&display=swap" rel="stylesheet">
+    <!-- Three.js (3D Canvas) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        body {
+            background-color: #0a0a0c;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        /* Glassmorphism Panel */
+        .glass-sushi {
+            background: rgba(18, 18, 24, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff2a3 0%, #ffd700 50%, #cca000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .red-gradient-text {
+            background: linear-gradient(135deg, #ff7b54 0%, #ff2a4b 50%, #a10019 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff2a4b;
+            border-radius: 4px;
+        }
+
+        .burst-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particleFade 1s cubic-bezier(0,0,0.2,1) FORWARDS;
+        }
+
+        @keyframes particleFade {
+            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--tw-tx), var(--tw-ty)) scale(2) rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="selection:bg-sushi-red selection:text-white relative">
+
+    <!-- 3D Canvas Background -->
+    <canvas id="sushi3dCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-60"></canvas>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass-sushi border-b border-sushi-gold/20 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="scrollToSection('hero')">
+                <span class="w-10 h-10 rounded-full bg-sushi-red text-sushi-gold font-extrabold flex items-center justify-center text-xl shadow-lg shadow-sushi-red/50 animate-pulse">
+                    鮨
+                </span>
+                <div>
+                    <span class="text-xl font-black font-sans tracking-widest gold-gradient-text">SUSHI IS LIFE</span>
+                    <span class="text-[10px] block font-mono text-sushi-salmon tracking-widest uppercase">寿司絶対至上主義マニフェスト</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-8 text-sm font-bold tracking-wider">
+                <a href="#charm" class="hover:text-sushi-gold transition-colors">寿司の真理</a>
+                <a href="#pureness" class="hover:text-sushi-gold transition-colors">純粋寿司宣言</a>
+                <a href="#history" class="hover:text-sushi-gold transition-colors">歴史と証明</a>
+                <a href="#gallery" class="hover:text-sushi-gold transition-colors">神々たるネタ図鑑</a>
+                <a href="#simulator" class="hover:text-sushi-gold transition-colors">究極握り体験</a>
+                <a href="#references" class="hover:text-sushi-gold transition-colors">出典・参考文献</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button id="soundToggle" onclick="toggleAudio()" class="px-3 py-1.5 rounded-full bg-slate-900 border border-sushi-gold/30 text-xs text-sushi-gold font-mono flex items-center gap-2 hover:bg-sushi-gold hover:text-black transition-all">
+                    <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+                    <span id="soundText">音効 : ON</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-12 px-4 z-10 overflow-hidden">
+        <div class="absolute left-0 top-1/4 w-72 h-72 opacity-10 pointer-events-none vertical-text text-8xl font-black text-sushi-gold select-none">
+            一貫入魂
+        </div>
+        <div class="absolute right-0 bottom-10 w-72 h-72 opacity-10 pointer-events-none vertical-text text-8xl font-black text-sushi-red select-none">
+            至高至福
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tight mb-6 leading-none font-sans uppercase">
+                <span class="block text-slate-100">I LIKE SUSHI.</span>
+                <span class="block gold-gradient-text animate-pulse-glow mt-2">YOU LIKE? REALLY?</span>
+            </h1>
+
+            <p class="text-slate-300 text-lg md:text-2xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+                シャリの温もり、ネタの輝き、ワサビの刺激、そして職人の魂。<br class="hidden sm:block">
+                手のひらの上のたった数グラムに凝縮された<strong class="text-sushi-gold font-bold">「究極の小宇宙」</strong>。その圧倒的魅力を全世界へ叩き付ける。
+            </p>
+
+            <div class="flex flex-col items-center justify-center gap-4">
+                <button id="loveBurstBtn" onclick="triggerLoveBurst(event)" class="relative group px-10 py-6 rounded-2xl bg-gradient-to-r from-sushi-red via-sushi-salmon to-sushi-gold text-slate-950 font-black text-2xl shadow-2xl shadow-sushi-red/50 hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white flex items-center gap-4 cursor-pointer">
+                    <i class="fa-solid fa-heart text-sushi-red animate-bounce"></i>
+                    <span>寿司愛を爆発させる (<span id="globalLoveCount">1,280,450</span>)</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANTI-CALIFORNIA ROLL & PURE SUSHI MANIFESTO SECTION -->
+    <section id="pureness" class="py-12 px-4 relative z-10 max-w-5xl mx-auto">
+        <div class="glass-sushi p-8 sm:p-10 rounded-3xl border-2 border-sushi-red shadow-2xl bg-gradient-to-r from-red-950/80 via-slate-900/90 to-red-950/80">
+            <div class="flex flex-wrap items-center gap-4 mb-4">
+                <span class="px-4 py-1.5 rounded-full bg-sushi-red text-white text-xs font-mono font-black animate-pulse flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>厳格なる定義声明</span>
+                </span>
+                <span class="text-xs font-mono text-sushi-gold tracking-widest uppercase">PURE SUSHI DECLARATION</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black text-white mb-4 leading-tight">
+                「カリフォルニアロールは寿司ではない」<br>
+                <span class="red-gradient-text">断固たる純粋『握り・軍艦』至上主義</span>
+            </h2>
+            <p class="text-slate-200 text-sm sm:text-base leading-relaxed mb-4">
+                アボカドやマヨネーズをあしらい裏巻きにした創作料理を全否定するわけではない。しかし我々はここに力強く断言する——<strong class="text-sushi-gold">「あれはアボカド・ライスサラダ・ロールであり、日本の伝統たる『寿司』ではない」</strong>（圧）。
+            </p>
+            <p class="text-slate-300 text-sm leading-relaxed">
+                本物の寿司とは、厳選された米と酢が調和する「シャリ」、職人の手技が注ぎ込まれた「握り」、そして大海原の命そのものである「真なるネタ（マグロ・サーモン・ウニ等）」の一体化によってのみ成立する神聖なる芸術なのだ。
+            </p>
+        </div>
+    </section>
+
+    <!-- SUSHI CHARM / TRUTH SECTION -->
+    <section id="charm" class="py-24 px-4 relative z-10 bg-gradient-to-b from-transparent via-sushi-panel to-transparent border-y border-sushi-gold/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-mono font-bold tracking-widest text-sushi-gold uppercase mb-2">SUPREME TRUTH</h2>
+                <p class="text-4xl md:text-6xl font-black text-slate-100 mb-4">寿司が地球最高の料理である<br><span class="red-gradient-text">4つの圧倒的真実</span></p>
+                <div class="w-24 h-1 bg-sushi-gold mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Reason 1 -->
+                <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/20 hover:border-sushi-gold transition-all duration-500 hover:-translate-y-2 group">
+                    <div class="w-16 h-16 rounded-2xl bg-sushi-red/20 text-sushi-salmon flex items-center justify-center text-3xl mb-6 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-atom"></i>
+                    </div>
+                    <span class="text-xs font-mono text-sushi-gold block mb-2">TRUTH #01</span>
+                    <h3 class="text-2xl font-bold text-slate-100 mb-4">三位一体の物理化学</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        ネタの脂とイノシン酸、酢飯の酢酸と甘み、ワサビのアリルカラシ油。これらが口内で同時爆発する計算し尽くされた味覚設計が施されている。
+                    </p>
+                </div>
+
+                <!-- Reason 2 -->
+                <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/20 hover:border-sushi-gold transition-all duration-500 hover:-translate-y-2 group">
+                    <div class="w-16 h-16 rounded-2xl bg-sushi-gold/20 text-sushi-gold flex items-center justify-center text-3xl mb-6 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-temperature-three-quarters"></i>
+                    </div>
+                    <span class="text-xs font-mono text-sushi-gold block mb-2">TRUTH #02</span>
+                    <h3 class="text-2xl font-bold text-slate-100 mb-4">人肌が生み出す温度美</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        キリッと冷やしたネタと、人間の体温（約36度）に合わせたシャリ。この数度の温度差が舌の味蕾を最大限に刺激し、脂を官能的に溶かす。
+                    </p>
+                </div>
+
+                <!-- Reason 3 -->
+                <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/20 hover:border-sushi-gold transition-all duration-500 hover:-translate-y-2 group">
+                    <div class="w-16 h-16 rounded-2xl bg-sushi-salmon/20 text-sushi-salmon flex items-center justify-center text-3xl mb-6 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-fish-fins"></i>
+                    </div>
+                    <span class="text-xs font-mono text-sushi-gold block mb-2">TRUTH #03</span>
+                    <h3 class="text-2xl font-bold text-slate-100 mb-4">生命の頂点を頂く美学</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        大海原を泳ぎ抜いた魚介の「旬」という極限の一瞬を無駄なく頂く。和食の引き算が生んだ、素材への極限のリスペクトと感謝の到達点である。
+                    </p>
+                </div>
+
+                <!-- Reason 4 -->
+                <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/20 hover:border-sushi-gold transition-all duration-500 hover:-translate-y-2 group">
+                    <div class="w-16 h-16 rounded-2xl bg-sushi-wasabi/20 text-sushi-wasabi flex items-center justify-center text-3xl mb-6 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <span class="text-xs font-mono text-sushi-gold block mb-2">TRUTH #04</span>
+                    <h3 class="text-2xl font-bold text-slate-100 mb-4">手掴み2秒の全自動多幸感</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        ナイフもフォークも不要。掴み、口へ放り込む。わずか2秒でドパミンと多幸感が脳天を直撃する、地球上で最もファストでストロングな完全食だ。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REAL HISTORY & FACTS SECTION (CITATIONS & DATA) -->
+    <section id="history" class="py-24 px-4 relative z-10 max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-xs font-mono font-bold tracking-widest text-sushi-gold uppercase mb-2">FACTS & HISTORICAL EVIDENCE</h2>
+            <p class="text-4xl md:text-5xl font-black text-slate-100 mb-4">歴史と公的データが裏付ける<br><span class="gold-gradient-text">『寿司の伝説的進化史』</span></p>
+            <p class="text-slate-400 text-sm">農林水産省やミツカン等の公式史料に基づき、寿司がいかにして日本から世界へと飛翔したかを証明する。</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Fact Card 1 -->
+            <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/30">
+                <div class="text-sushi-gold text-4xl font-extrabold font-mono mb-4">1800s</div>
+                <h3 class="text-2xl font-black text-white mb-3">江戸前握り寿司の誕生と赤酢</h3>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                    1800年代前半、江戸の町で屋台のファーストフードとして握り寿司が誕生した。この寿司を支えたのが、酒粕から造られた「赤酢（粕酢）」である。1804年創業のミツカン初代・中野又左衛門らが開発した赤酢が、江戸っ子の心を掴んだと記録されている。
+                </p>
+                <div class="text-[11px] font-mono text-sushi-salmon bg-sushi-salmon/10 p-3 rounded-xl border border-sushi-salmon/20">
+                    出典参照：株式会社ミツカン「すしラボ」史料
+                </div>
+            </div>
+
+            <!-- Fact Card 2 -->
+            <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/30">
+                <div class="text-sushi-gold text-4xl font-extrabold font-mono mb-4">3x SIZE</div>
+                <h3 class="text-2xl font-black text-white mb-3">昔の寿司は現代の3倍のデカさ</h3>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                    江戸時代の握り寿司のシャリは、現在のおにぎりほど（現在の約3倍）の大きさがあり、庶民が手軽に小腹を満たすための食料であった。時代と共に洗練され、ひと口サイズの至高の美へと進化を遂げた。
+                </p>
+                <div class="text-[11px] font-mono text-sushi-gold bg-sushi-gold/10 p-3 rounded-xl border border-sushi-gold/20">
+                    出典参照：農林水産省「うちの郷土料理：にぎりずし」
+                </div>
+            </div>
+
+            <!-- Fact Card 3 -->
+            <div class="glass-sushi p-8 rounded-3xl border border-sushi-gold/30">
+                <div class="text-sushi-gold text-4xl font-extrabold font-mono mb-4">1958</div>
+                <h3 class="text-2xl font-black text-white mb-3">回転寿司による革命的庶民化</h3>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                    昭和33年（1958年）、大阪の「元禄寿司」によって世界初の回転寿司が開業された。コンベアで寿司を運ぶイノベーションにより、高嶺の花だった寿司が一気に国民的・世界的な大衆食へと拡大した。
+                </p>
+                <div class="text-[11px] font-mono text-sushi-wasabi bg-sushi-wasabi/10 p-3 rounded-xl border border-sushi-wasabi/20">
+                    出典参照：日本文化研究 / 元禄寿司発祥史
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUSHI NETA GALLERY -->
+    <section id="gallery" class="py-24 px-4 relative z-10 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
+            <div>
+                <h2 class="text-xs font-mono font-bold tracking-widest text-sushi-salmon uppercase mb-2">THE ENCYCLOPEDIA OF PURE SUSHI</h2>
+                <p class="text-4xl md:text-6xl font-black text-slate-100">神々たるネタ図鑑</p>
+            </div>
+            <p class="text-slate-400 text-sm max-w-md">
+                厳選された本物の『握り』と『軍艦』のみを掲載。カリフォルニアロール等の創作写真は一切排除。
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Maguro -->
+            <div onclick="openNetaModal('maguro')" class="glass-sushi rounded-3xl overflow-hidden border border-sushi-red/30 cursor-pointer group hover:border-sushi-red hover:shadow-2xl hover:shadow-sushi-red/40 transition-all duration-300">
+                <div class="h-60 relative overflow-hidden bg-slate-900">
+                    <img src="https://images.unsplash.com/photo-1607247098731-5bf6416d2e8c?auto=format&fit=crop&w=800&q=80" 
+                         alt="本マグロ赤身握り" 
+                         onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Sushi_tuna.jpg/800px-Sushi_tuna.jpg';" 
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sushi-gold text-xs font-mono border border-sushi-gold/30">本マグロ握り</span>
+                            <span class="text-6xl font-black opacity-30 text-white font-serif select-none">鮪</span>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-black text-white drop-shadow-md">本マグロ (赤身/中トロ)</h3>
+                            <span class="text-xs text-red-300 font-mono drop-shadow">Hon-Maguro Nigiri</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                        正真正銘の「本マグロ赤身・中トロ握り」。濃密な旨味と爽やかな酸味、そして舌の上でほどける脂。創作巻きなど不要、一貫の握りで勝負する絶対王者。
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-sushi-gold">
+                        <span>神格レベル: ★★★★★</span>
+                        <span class="group-hover:translate-x-1 transition-transform">真理を観る <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salmon -->
+            <div onclick="openNetaModal('salmon')" class="glass-sushi rounded-3xl overflow-hidden border border-sushi-salmon/30 cursor-pointer group hover:border-sushi-salmon hover:shadow-2xl hover:shadow-sushi-salmon/40 transition-all duration-300">
+                <div class="h-60 relative overflow-hidden bg-slate-900">
+                    <img src="https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=800&q=80" 
+                         alt="生サーモン握り" 
+                         onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Salmon_nigiri.jpg/800px-Salmon_nigiri.jpg';" 
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sushi-gold text-xs font-mono border border-sushi-gold/30">生サーモン握り</span>
+                            <span class="text-6xl font-black opacity-30 text-white font-serif select-none">鮭</span>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-black text-white drop-shadow-md">生サーモン</h3>
+                            <span class="text-xs text-orange-300 font-mono drop-shadow">Fresh Salmon Nigiri</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                        本物の「生サーモン握り」。絹のような脂のサシと、口中に広がる濃厚な甘み。アボカド巻きではなく、一貫の握りで味わう至福。
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-sushi-gold">
+                        <span>神格レベル: ★★★★★</span>
+                        <span class="group-hover:translate-x-1 transition-transform">真理を観る <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uni -->
+            <div onclick="openNetaModal('uni')" class="glass-sushi rounded-3xl overflow-hidden border border-sushi-gold/30 cursor-pointer group hover:border-sushi-gold hover:shadow-2xl hover:shadow-sushi-gold/40 transition-all duration-300">
+                <div class="h-60 relative overflow-hidden bg-slate-900">
+                    <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80" 
+                         alt="生ウニ軍艦" 
+                         onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Uni_gunkan.jpg/800px-Uni_gunkan.jpg';" 
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sushi-gold text-xs font-mono border border-sushi-gold/30">極上ウニ軍艦</span>
+                            <span class="text-6xl font-black opacity-30 text-white font-serif select-none">海胆</span>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-black text-white drop-shadow-md">雲丹 (ウニ軍艦)</h3>
+                            <span class="text-xs text-amber-300 font-mono drop-shadow">Fresh Uni Gunkan</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                        有明海苔に包まれた黄金の「生ウニ軍艦」。磯の香りと共に溢れ出る濃厚なクリーミーさは、伝統軍艦巻きの至高。
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-sushi-gold">
+                        <span>神格レベル: ★★★★★</span>
+                        <span class="group-hover:translate-x-1 transition-transform">真理を観る <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ikura -->
+            <div onclick="openNetaModal('ikura')" class="glass-sushi rounded-3xl overflow-hidden border border-red-500/30 cursor-pointer group hover:border-red-500 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300">
+                <div class="h-60 relative overflow-hidden bg-slate-900">
+                    <img src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?auto=format&fit=crop&w=800&q=80" 
+                         alt="いくら醤油漬け軍艦" 
+                         onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Ikura_gunkan_maki.jpg/800px-Ikura_gunkan_maki.jpg';" 
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sushi-gold text-xs font-mono border border-sushi-gold/30">いくら軍艦</span>
+                            <span class="text-6xl font-black opacity-30 text-white font-serif select-none">筋子</span>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-black text-white drop-shadow-md">いくら醤油漬け</h3>
+                            <span class="text-xs text-red-300 font-mono drop-shadow">Ikura Roe Gunkan</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                        一粒一粒が輝く「いくら醤油漬け軍艦」。口内でプチッと弾けた瞬間に溢れる秘伝出汁と海の旨味。純和風軍艦の至宝。
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-sushi-gold">
+                        <span>神格レベル: ★★★★★</span>
+                        <span class="group-hover:translate-x-1 transition-transform">真理を観る <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ebi -->
+            <div onclick="openNetaModal('ebi')" class="glass-sushi rounded-3xl overflow-hidden border border-pink-500/30 cursor-pointer group hover:border-pink-500 hover:shadow-2xl hover:shadow-pink-500/40 transition-all duration-300">
+                <div class="h-60 relative overflow-hidden bg-slate-900">
+                    <img src="https://images.unsplash.com/photo-1615361200141-f45040f367be?auto=format&fit=crop&w=800&q=80" 
+                         alt="蒸しエビ握り" 
+                         onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ebi_Nigiri_Sushi.jpg/800px-Ebi_Nigiri_Sushi.jpg';" 
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sushi-gold text-xs font-mono border border-sushi-gold/30">海老握り</span>
+                            <span class="text-6xl font-black opacity-30 text-white font-serif select-none">海老</span>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-black text-white drop-shadow-md">海老 (蒸しエビ/ボタン)</h3>
+                            <span class="text-xs text-pink-300 font-mono drop-shadow">Ebi Nigiri</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                        職人が丁寧に開いた真の「海老握り」。絶妙な茹で加減によるプリッとした歯ごたえと甘み。見た目も美しい職人技術の結晶。
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-sushi-gold">
+                        <span>神格レベル: ★★★★★</span>
+                        <span class="group-hover:translate-x-1 transition-transform">真理を観る <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anago -->
+            <div onclick="openNetaModal('anago')" class="glass-sushi rounded-3xl overflow-hidden border border-amber-800/30 cursor-pointer group hover:border-amber-600 hover:shadow-2xl hover:shadow-amber-600/40 transition-all duration-300">
+                <div class="h-60 relative overflow-hidden bg-slate-900">
+                    <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80" 
+                         alt="江戸前 煮穴子握り" 
+                         onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Unagi_Nigiri.jpg/800px-Unagi_Nigiri.jpg';" 
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="inline-block px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sushi-gold text-xs font-mono border border-sushi-gold/30">江戸前 煮穴子</span>
+                            <span class="text-6xl font-black opacity-30 text-white font-serif select-none">穴子</span>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-black text-white drop-shadow-md">穴子 (煮ツメ)</h3>
+                            <span class="text-xs text-amber-300 font-mono drop-shadow">Edomae Anago Nigiri</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 text-sm line-clamp-3 leading-relaxed">
+                        伝統の煮ツメが輝く「江戸前 煮穴子握り」。ふわっと解ける柔らかさと継ぎ足しの甘タレ。江戸前鮨の歴史を物語る名作。
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-sushi-gold">
+                        <span>神格レベル: ★★★★★</span>
+                        <span class="group-hover:translate-x-1 transition-transform">真理を観る <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE SUSHI CRAFT SIMULATOR -->
+    <section id="simulator" class="py-24 px-4 relative z-10 glass-sushi border-y border-sushi-gold/20 my-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-xs font-mono font-bold tracking-widest text-sushi-gold uppercase mb-2">INTERACTIVE WORKSHOP</h2>
+                <p class="text-4xl md:text-5xl font-black text-slate-100">究極の一貫を握るシミュレーター</p>
+                <p class="text-slate-400 text-sm mt-3">ネタの選択、シャリのグラム数、ワサビの配合をリアルタイムで微調整し、理想の一貫を錬成せよ。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6 bg-slate-950/80 p-8 rounded-3xl border border-slate-800">
+                    <div>
+                        <label class="block text-xs font-mono text-sushi-gold mb-2">1. ネタの選定</label>
+                        <select id="simNetaSelect" onchange="updateSushiCanvas()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 font-bold focus:outline-none focus:border-sushi-gold">
+                            <option value="maguro">極上本マグロ赤身</option>
+                            <option value="tro">脂のった大トロ</option>
+                            <option value="salmon">ノルウェーサーモン</option>
+                            <option value="uni">極上北海道ウニ</option>
+                            <option value="tamago">ふっくら厚焼き玉子</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-slate-300 mb-2">
+                            <span>2. シャリの質量 (グラム)</span>
+                            <span id="shariVal" class="text-sushi-gold font-bold">20g (黄金比率)</span>
+                        </div>
+                        <input type="range" id="shariSlider" min="10" max="35" value="20" oninput="updateSushiCanvas()" class="w-full accent-sushi-gold bg-slate-800 rounded-lg cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-slate-300 mb-2">
+                            <span>3. ワサビの配合</span>
+                            <span id="wasabiVal" class="text-sushi-wasabi font-bold">適量 (絶妙)</span>
+                        </div>
+                        <input type="range" id="wasabiSlider" min="0" max="100" value="50" oninput="updateSushiCanvas()" class="w-full accent-sushi-wasabi bg-slate-800 rounded-lg cursor-pointer">
+                    </div>
+
+                    <button onclick="craftSushiAction()" class="w-full py-4 rounded-xl bg-gradient-to-r from-sushi-red to-sushi-gold text-slate-950 font-black text-lg hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-sushi-red/30 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-hand-holding-heart text-xl"></i>
+                        <span>魂を込めて一貫を握る！</span>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-7 flex flex-col items-center justify-center p-8 bg-slate-900/90 rounded-3xl border border-slate-800 relative">
+                    <div class="text-xs font-mono text-sushi-gold mb-2 self-start flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-sushi-gold animate-ping"></span>
+                        LIVE SUSHI RENDERER
+                    </div>
+                    <canvas id="sushiCraftCanvas" width="450" height="300" class="max-w-full h-auto rounded-2xl border border-slate-800 bg-slate-950 shadow-inner"></canvas>
+                    
+                    <div id="craftRating" class="mt-4 text-center font-bold text-sushi-gold text-lg min-h-[28px]">
+                        「パラメータを調整して理想の一貫を握れ」
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REFERENCES & CITATIONS SECTION -->
+    <section id="references" class="py-20 px-4 relative z-10 max-w-7xl mx-auto border-t border-sushi-gold/20">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-xs font-mono font-bold tracking-widest text-sushi-gold uppercase mb-2">CITATIONS & OFFICIAL SOURCES</h2>
+            <p class="text-3xl font-black text-slate-100">引用・出典元情報</p>
+            <p class="text-slate-400 text-xs mt-2">当サイトの記述は、以下の公的機関・伝統団体および企業公式史料を元に構成されている。</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+            <a href="https://www.maff.go.jp/j/keikaku/syokubunka/k_ryouri/search_menu/menu/34_2_tokyo.html" target="_blank" rel="noopener noreferrer" class="p-5 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-sushi-gold transition-all block group">
+                <div class="text-sushi-gold font-bold text-sm mb-1 group-hover:underline">農林水産省</div>
+                <div class="text-slate-300 font-sans font-bold mb-2">「うちの郷土料理：にぎりずし」</div>
+                <div class="text-slate-400 text-[11px] leading-relaxed">江戸時代後期の屋台食文化、シャリの歴史的サイズ変遷、郷土料理としての伝統に関する記述。</div>
+            </a>
+
+            <a href="https://www.mizkan.co.jp/sushilab/manabu/" target="_blank" rel="noopener noreferrer" class="p-5 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-sushi-gold transition-all block group">
+                <div class="text-sushi-gold font-bold text-sm mb-1 group-hover:underline">株式会社ミツカン</div>
+                <div class="text-slate-300 font-sans font-bold mb-2">「すしラボ（すしの歴史）」</div>
+                <div class="text-slate-400 text-[11px] leading-relaxed">1800年代前半の江戸における握り寿司の誕生と、それを支えた「赤酢（粕酢）」の開発史。</div>
+            </a>
+
+            <a href="https://www.seiei.or.jp/popup/p11.html" target="_blank" rel="noopener noreferrer" class="p-5 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-sushi-gold transition-all block group">
+                <div class="text-sushi-gold font-bold text-sm mb-1 group-hover:underline">全すし連</div>
+                <div class="text-slate-300 font-sans font-bold mb-2">全国すし商生活衛生同業組合連合会</div>
+                <div class="text-slate-400 text-[11px] leading-relaxed">毎年11月1日「全国統一すしの日」の制定や日本のすし文化普及活動に関する情報。</div>
+            </a>
+
+            <a href="https://1200irori.jp/content/learn/detail/case17" target="_blank" rel="noopener noreferrer" class="p-5 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-sushi-gold transition-all block group">
+                <div class="text-sushi-gold font-bold text-sm mb-1 group-hover:underline">元禄寿司 / 日本文化研究</div>
+                <div class="text-slate-300 font-sans font-bold mb-2">回転寿司の発祥と寿司の歴史</div>
+                <div class="text-slate-400 text-[11px] leading-relaxed">1958年（昭和33年）の回転寿司発祥と、世界の食文化へと広がった大衆化の記録。</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- NETA DETAIL MODAL -->
+    <div id="netaModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-sushi max-w-2xl w-full rounded-3xl border border-sushi-gold/40 relative shadow-2xl transform scale-90 transition-all duration-300 overflow-hidden" id="netaModalCard">
+            <button onclick="closeNetaModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-slate-950/80 text-slate-300 hover:text-white flex items-center justify-center text-xl border border-slate-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <!-- Modal Header Image -->
+            <div class="h-64 relative overflow-hidden">
+                <img id="modalImg" src="" alt="Neta Photo" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent p-6 flex flex-col justify-end">
+                    <span class="text-xs font-mono text-sushi-gold uppercase tracking-widest block mb-1" id="modalSub">LOVE STORY</span>
+                    <h3 class="text-4xl font-black text-white drop-shadow-md" id="modalTitle">ネタ名</h3>
+                </div>
+            </div>
+
+            <div class="p-8">
+                <div class="w-16 h-1 bg-sushi-red mb-6"></div>
+                <p class="text-slate-300 text-base leading-relaxed mb-6" id="modalBody">
+                    解説が入る。
+                </p>
+                <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 text-xs font-mono text-sushi-gold flex justify-between items-center">
+                    <span>寿司神判定: <strong class="text-white">絶対喰うべきレベル 100%</strong></span>
+                    <button onclick="searchNearbySushi()" class="px-4 py-2 rounded-xl bg-sushi-red text-white font-bold hover:bg-red-600 transition-all active:scale-95 shadow-lg shadow-sushi-red/40 flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-person-running animate-bounce"></i>
+                        <span>今すぐ寿司屋へ走る</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMERGENCY SUSHI RADAR MODAL -->
+    <div id="radarModal" class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-sushi max-w-xl w-full p-8 rounded-3xl border border-sushi-red/50 relative shadow-2xl text-center transform scale-90 transition-all duration-300" id="radarModalCard">
+            <button onclick="closeRadarModal()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="w-20 h-20 rounded-full bg-sushi-red/20 text-sushi-red border border-sushi-red/50 flex items-center justify-center mx-auto mb-4 text-3xl animate-pulse">
+                <i class="fa-solid fa-compass text-sushi-gold animate-spin"></i>
+            </div>
+
+            <span class="text-xs font-mono text-sushi-gold uppercase tracking-widest block mb-1">EMERGENCY SUSHI RADAR</span>
+            <h3 class="text-2xl font-black text-white mb-2">緊急寿司屋索敵システム起動</h3>
+            <p class="text-slate-300 text-xs mb-6" id="radarStatus">
+                GPS位置情報を取得中... 付近の寿司屋を探索している。
+            </p>
+
+            <div class="space-y-3 mb-6 text-left">
+                <button id="mapsSearchBtn" onclick="openGoogleMapsSearch()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sushi-red via-sushi-salmon to-sushi-gold text-slate-950 font-black text-base flex items-center justify-between shadow-xl shadow-sushi-red/30 hover:scale-[1.02] active:scale-95 transition-all">
+                    <span class="flex items-center gap-3">
+                        <i class="fa-solid fa-map-location-dot text-xl"></i>
+                        <span>現在地周辺の寿司屋をマップ検索</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+            </div>
+
+            <p class="text-[11px] text-slate-400 font-mono">
+                ※ ボタンを押すとGoogleマップが起動し、現在地から最短距離の寿司屋へナビゲートする。
+            </p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="glass-sushi border-t border-sushi-gold/20 py-12 px-4 relative z-10 text-center">
+        <div class="max-w-7xl mx-auto flex flex-col items-center justify-center gap-6">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-full bg-sushi-red text-sushi-gold font-black flex items-center justify-center">鮨</span>
+                <span class="font-extrabold text-lg gold-gradient-text">SUSHI IS LIFE PORTAL</span>
+            </div>
+            <p class="text-slate-400 text-xs max-w-md leading-relaxed">
+                当サイトは寿司への狂おしいほどの愛と歴史的リスペクトによって構築されている。<br>
+                今すぐ寿司屋へ足を運び、至福の一貫を味わうのだ。
+            </p>
+            <div class="text-[10px] font-mono text-slate-600">
+                &copy; 2026 SUSHI LOVE UNIVERSE. MANIFESTO FOR ALL SUSHI LOVERS.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Web Audio API Synthetic Sound Engine ---
+        let audioCtx = null;
+        let isAudioEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTsuzumiSound() {
+            if (!isAudioEnabled) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.15);
+
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function playSparkleSound() {
+            if (!isAudioEnabled) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function toggleAudio() {
+            isAudioEnabled = !isAudioEnabled;
+            const text = document.getElementById('soundText');
+            const icon = document.getElementById('soundIcon');
+            if (isAudioEnabled) {
+                text.innerText = '音効 : ON';
+                icon.className = 'fa-solid fa-volume-high';
+                playSparkleSound();
+            } else {
+                text.innerText = '音効 : OFF';
+                icon.className = 'fa-solid fa-volume-xmark';
+            }
+        }
+
+        // --- Three.js 3D Background ---
+        const canvas3d = document.getElementById('sushi3dCanvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas3d, alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const particlesCount = 200;
+        const positions = new Float32Array(particlesCount * 3);
+        const colors = new Float32Array(particlesCount * 3);
+
+        const goldColor = new THREE.Color('#ffd700');
+        const redColor = new THREE.Color('#ff2a4b');
+
+        for (let i = 0; i < particlesCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 20;
+            positions[i + 1] = (Math.random() - 0.5) * 20;
+            positions[i + 2] = (Math.random() - 0.5) * 20;
+
+            const chosenColor = Math.random() > 0.3 ? goldColor : redColor;
+            colors[i] = chosenColor.r;
+            colors[i + 1] = chosenColor.g;
+            colors[i + 2] = chosenColor.b;
+        }
+
+        const particleGeo = new THREE.BufferGeometry();
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const particleMat = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particleSystem = new THREE.Points(particleGeo, particleMat);
+        scene.add(particleSystem);
+        camera.position.z = 5;
+
+        function animate3d() {
+            requestAnimationFrame(animate3d);
+            particleSystem.rotation.y += 0.0015;
+            particleSystem.rotation.x += 0.0008;
+            renderer.render(scene, camera);
+        }
+        animate3d();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- Counter & Particle Explosions ---
+        let loveCounter = 1280450;
+        function triggerLoveBurst(event) {
+            playTsuzumiSound();
+            loveCounter++;
+            document.getElementById('globalLoveCount').innerText = loveCounter.toLocaleString();
+
+            const btn = event.currentTarget;
+            const rect = btn.getBoundingClientRect();
+            const emojis = ['🍣', '🍱', '❤️', '🔥', '✨', '🍣', '🍣'];
+
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'burst-particle text-2xl font-bold select-none';
+                particle.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+                const tx = (Math.random() - 0.5) * 250;
+                const ty = -Math.random() * 200 - 50;
+
+                particle.style.setProperty('--tw-tx', `${tx}px`);
+                particle.style.setProperty('--tw-ty', `${ty}px`);
+                particle.style.left = `${event.clientX || rect.left + rect.width / 2}px`;
+                particle.style.top = `${event.clientY || rect.top + rect.height / 2}px`;
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // --- Simulator Canvas ---
+        const craftCanvas = document.getElementById('sushiCraftCanvas');
+        const ctx = craftCanvas.getContext('2d');
+
+        function updateSushiCanvas() {
+            const neta = document.getElementById('simNetaSelect').value;
+            const shariGram = parseInt(document.getElementById('shariSlider').value);
+            const wasabiVal = parseInt(document.getElementById('wasabiSlider').value);
+
+            document.getElementById('shariVal').innerText = `${shariGram}g ${shariGram === 20 ? '(黄金標準)' : shariGram > 25 ? '(デカ盛り)' : '(シャリ小)'}`;
+            document.getElementById('wasabiVal').innerText = `${wasabiVal}% ${wasabiVal === 50 ? '(絶妙)' : wasabiVal > 80 ? '(激辛覚醒)' : wasabiVal === 0 ? '(サビ抜き)' : '(控えめ)'}`;
+
+            ctx.clearRect(0, 0, craftCanvas.width, craftCanvas.height);
+
+            const centerX = craftCanvas.width / 2;
+            const centerY = craftCanvas.height / 2 + 20;
+
+            ctx.fillStyle = '#2d1b0e';
+            ctx.fillRect(centerX - 150, centerY + 40, 300, 15);
+            ctx.fillStyle = '#4a2e18';
+            ctx.fillRect(centerX - 140, centerY + 30, 280, 10);
+
+            const shariWidth = 100 + (shariGram - 20) * 3;
+            const shariHeight = 45 + (shariGram - 20) * 1.5;
+
+            ctx.beginPath();
+            ctx.ellipse(centerX, centerY, shariWidth / 2, shariHeight / 2, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#f8fafc';
+            ctx.fill();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#cbd5e1';
+            for (let i = -shariWidth / 3; i < shariWidth / 3; i += 12) {
+                ctx.beginPath();
+                ctx.arc(centerX + i, centerY + (Math.sin(i) * 6), 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            if (wasabiVal > 0) {
+                const wasabiSize = (wasabiVal / 100) * 12;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY - shariHeight / 4, wasabiSize, 0, Math.PI * 2);
+                ctx.fillStyle = '#8ac926';
+                ctx.fill();
+            }
+
+            let netaColor = '#d90429';
+            let netaSecondary = '#a10019';
+
+            if (neta === 'tro') {
+                netaColor = '#ff4d6d';
+                netaSecondary = '#ffffff';
+            } else if (neta === 'salmon') {
+                netaColor = '#ff6b4a';
+                netaSecondary = '#ffffff';
+            } else if (neta === 'uni') {
+                netaColor = '#ffd700';
+                netaSecondary = '#cca000';
+            } else if (neta === 'tamago') {
+                netaColor = '#ffb703';
+                netaSecondary = '#fb8500';
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(centerX - shariWidth / 2 - 20, centerY + 5);
+            ctx.quadraticCurveTo(centerX, centerY - shariHeight - 25, centerX + shariWidth / 2 + 20, centerY + 5);
+            ctx.quadraticCurveTo(centerX, centerY - 5, centerX - shariWidth / 2 - 20, centerY + 5);
+
+            ctx.fillStyle = netaColor;
+            ctx.fill();
+
+            if (neta === 'salmon' || neta === 'tro') {
+                ctx.strokeStyle = netaSecondary;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX - 30, centerY - shariHeight / 2);
+                ctx.lineTo(centerX - 10, centerY - 5);
+                ctx.moveTo(centerX, centerY - shariHeight / 2 - 5);
+                ctx.lineTo(centerX + 20, centerY - 5);
+                ctx.stroke();
+            }
+
+            if (neta === 'uni') {
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(centerX - shariWidth / 2 - 5, centerY - 15, shariWidth + 10, 30);
+            }
+        }
+
+        function craftSushiAction() {
+            playTsuzumiSound();
+            const ratingBox = document.getElementById('craftRating');
+            const shariGram = parseInt(document.getElementById('shariSlider').value);
+            const wasabiVal = parseInt(document.getElementById('wasabiSlider').value);
+
+            let resultMsg = "";
+            if (shariGram === 20 && wasabiVal === 50) {
+                resultMsg = "✨【神域の一貫】完璧なる黄金バランス達成！まさに芸術だ！";
+                playSparkleSound();
+            } else if (wasabiVal > 80) {
+                resultMsg = "🔥【激辛覚醒】ワサビ大暴れ！脳天を突く超刺激的インパクト！";
+            } else if (shariGram > 28) {
+                resultMsg = "🍚【満腹至極】超特大シャリ！江戸前屋台サイズを彷彿とさせる重量感！";
+            } else {
+                resultMsg = "🍣【至福の旨味】見事な一貫だ！今すぐ口へ放り込め！";
+            }
+
+            ratingBox.innerText = resultMsg;
+            ratingBox.classList.add('animate-bounce');
+            setTimeout(() => ratingBox.classList.remove('animate-bounce'), 1000);
+        }
+
+        updateSushiCanvas();
+
+        // --- Modal ---
+        const modalData = {
+            maguro: {
+                title: "本マグロ (クロマグロ赤身・中トロ)",
+                sub: "HON-MAGURO NIGIRI",
+                img: "https://images.unsplash.com/photo-1607247098731-5bf6416d2e8c?auto=format&fit=crop&w=800&q=80",
+                body: "厳選された本マグロの握り。重厚な赤身の酸味と、中トロの解ける脂。カリフォルニアロールなどの創作巻きとは次元を異にする、江戸前握りの真髄である。"
+            },
+            salmon: {
+                title: "極上 生サーモン",
+                sub: "FRESH SALMON NIGIRI",
+                img: "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=800&q=80",
+                body: "とろける脂と鮮やかな橙色が美しい正統派サーモン握り。マヨネーズやアボカドで誤魔化さない、素の旨味を味わう一貫。"
+            },
+            uni: {
+                title: "北海道産 生雲丹 (ウニ軍艦)",
+                sub: "FRESH UNI GUNKAN",
+                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+                body: "磯の香りと濃密なコクが広がる軍艦巻きの至高。パリッとした質の良い海苔と酢飯がウニの濃厚な甘みを完璧に引き立てる。"
+            },
+            ikura: {
+                title: "自家製醤油漬け いくら軍艦",
+                sub: "IKURA ROE GUNKAN",
+                img: "https://images.unsplash.com/photo-1583623025817-d180a2221d0a?auto=format&fit=crop&w=800&q=80",
+                body: "口内で心地よくプチプチとはじける最高級いくらの軍艦。溢れ出す秘伝出汁と濃厚な旨味は正統派日本の味覚。"
+            },
+            ebi: {
+                title: "職人仕込み 蒸しエビ握り",
+                sub: "TRADITIONAL EBI NIGIRI",
+                img: "https://images.unsplash.com/photo-1615361200141-f45040f367be?auto=format&fit=crop&w=800&q=80",
+                body: "絶妙な手仕込みによって甘みと歯ごたえを極限まで引き出した海老握り。鮮やかな紅白の彩りは江戸前寿司の誇りである。"
+            },
+            anago: {
+                title: "江戸前 煮穴子 (秘伝ツメ)",
+                sub: "EDOMAE ANAGO NIGIRI",
+                img: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80",
+                body: "ふわっと解ける柔らかさと継ぎ足しの甘ツメが絶品の一貫。日本の伝統技法が凝縮された究極の〆（シメ）握り。"
+            }
+        };
+
+        function openNetaModal(key) {
+            playSparkleSound();
+            const data = modalData[key];
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalSub').innerText = data.sub;
+            document.getElementById('modalBody').innerText = data.body;
+            document.getElementById('modalImg').src = data.img;
+
+            const modal = document.getElementById('netaModal');
+            const card = document.getElementById('netaModalCard');
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-90');
+            card.classList.add('scale-100');
+        }
+
+        function closeNetaModal() {
+            const modal = document.getElementById('netaModal');
+            const card = document.getElementById('netaModalCard');
+
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-90');
+        }
+
+        // --- Emergency Sushi Search ---
+        let userLat = null;
+        let userLng = null;
+
+        function searchNearbySushi() {
+            playTsuzumiSound();
+            closeNetaModal();
+
+            const modal = document.getElementById('radarModal');
+            const card = document.getElementById('radarModalCard');
+            const status = document.getElementById('radarStatus');
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-90');
+            card.classList.add('scale-100');
+
+            status.innerText = 'GPS位置情報を取得中... 最寄りの寿司屋を探索している。';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLat = position.coords.latitude;
+                        userLng = position.coords.longitude;
+                        status.innerText = `現在地を測位完了 (${userLat.toFixed(3)}, ${userLng.toFixed(3)})！マップを開いて今すぐ走れ！`;
+                        openGoogleMapsSearch();
+                    },
+                    (error) => {
+                        status.innerText = '位置情報の自動取得に失敗した。以下のボタンから直接マップを開くのだ。';
+                    },
+                    { timeout: 5000 }
+                );
+            } else {
+                status.innerText = '位置情報非対応のブラウザだ。以下のマップボタンを使用せよ。';
+            }
+        }
+
+        function openGoogleMapsSearch() {
+            playSparkleSound();
+            let url = 'https://www.google.com/maps/search/%E5%AF%BF%E5%8F%B8%E5%B1%8B/';
+            if (userLat && userLng) {
+                url = `https://www.google.com/maps/search/%E5%AF%BF%E5%8F%B8%E5%B1%8B/@${userLat},${userLng},15z`;
+            }
+            window.open(url, '_blank');
+        }
+
+        function closeRadarModal() {
+            const modal = document.getElementById('radarModal');
+            const card = document.getElementById('radarModalCard');
+
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-90');
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
