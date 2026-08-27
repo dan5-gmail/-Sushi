@@ -3,7 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SUSHI IS LIFE | 寿司絶対至上主義マニフェスト</title>
+
+    <!-- ===== Favicon ===== -->
+    <link rel="icon" type="image/png" href="src/image/favicon.png">
+    <link rel="shortcut icon" href="src/image/favicon.png">
+    <link rel="apple-touch-icon" href="src/image/favicon.png">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b0b12">
+
+    <!-- iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SUSHI IS LIFE">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -34,123 +50,83 @@
                     },
                     keyframes: {
                         float: {
-                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '0%,100%': { transform: 'translateY(0) rotate(0deg)' },
                             '50%': { transform: 'translateY(-15px) rotate(2deg)' }
                         },
                         pulseGlow: {
-                            '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(255, 42, 75, 0.6))' },
-                            '50%': { filter: 'drop-shadow(0 0 35px rgba(255, 215, 0, 0.9))' }
+                            '0%,100%': { filter: 'drop-shadow(0 0 15px rgba(255,42,75,.6))' },
+                            '50%': { filter: 'drop-shadow(0 0 35px rgba(255,215,0,.9))' }
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800;0,900;1,900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Tokyo+Zoo&display=swap" rel="stylesheet">
-    <!-- Three.js (3D Canvas) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800;0,900;1,900&family=Noto+Serif+JP:wght@400;700;900&family=Zen+Tokyo+Zoo&display=swap"
+          rel="stylesheet">
+
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        body {
-            background-color: #0a0a0c;
-            color: #f1f5f9;
-            overflow-x: hidden;
-            font-family: 'Noto Serif JP', serif;
+        body{
+            background:#0a0a0c;
+            color:#f1f5f9;
+            overflow-x:hidden;
+            font-family:'Noto Serif JP',serif;
         }
 
-        /* Glassmorphism Panel */
-        .glass-sushi {
-            background: rgba(18, 18, 24, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+        .glass-sushi{
+            background:rgba(18,18,24,.85);
+            backdrop-filter:blur(16px);
+            border:1px solid rgba(255,215,0,.2);
         }
 
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #fff2a3 0%, #ffd700 50%, #cca000 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .gold-gradient-text{
+            background:linear-gradient(135deg,#fff2a3 0%,#ffd700 50%,#cca000 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
         }
 
-        .red-gradient-text {
-            background: linear-gradient(135deg, #ff7b54 0%, #ff2a4b 50%, #a10019 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .red-gradient-text{
+            background:linear-gradient(135deg,#ff7b54 0%,#ff2a4b 50%,#a10019 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
         }
 
-        .vertical-text {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
+        .vertical-text{
+            writing-mode:vertical-rl;
+            text-orientation:upright;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ff2a4b;
-            border-radius: 4px;
+        ::-webkit-scrollbar{width:8px;}
+        ::-webkit-scrollbar-track{background:#0a0a0c;}
+        ::-webkit-scrollbar-thumb{
+            background:#ff2a4b;
+            border-radius:4px;
         }
 
-        .burst-particle {
-            position: absolute;
-            pointer-events: none;
-            animation: particleFade 1s cubic-bezier(0,0,0.2,1) FORWARDS;
+        .burst-particle{
+            position:absolute;
+            pointer-events:none;
+            animation:particleFade 1s cubic-bezier(0,0,.2,1) forwards;
         }
 
-        @keyframes particleFade {
-            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: translate(var(--tw-tx), var(--tw-ty)) scale(2) rotate(360deg); }
+        @keyframes particleFade{
+            0%{opacity:1;transform:translate(0,0) scale(1) rotate(0deg);}
+            100%{opacity:0;transform:translate(var(--tw-tx),var(--tw-ty)) scale(2) rotate(360deg);}
         }
     </style>
-
-    <!-- 1. Apple / iOS (ホーム画面追加・Safari) 用 (最も重要) -->
-
-  <!-- 端末ごとの強制リサイズとアスペクト比歪みを防ぐ -->
-
-  <link rel="apple-touch-icon" href="/favicon.png" />
-
-
-
-  <!-- 2. 標準の Favicon (PCのタブ・ブックマーク用) -->
-
-  <!-- Appleが嫌うサイズ設定を避け、標準的なPNGとして指定 -->
-
-  <link rel="icon" type="image/png" href="/favicon.png" sizes="192x192" />
-
-
-
-  <!-- 3. Web App Manifest (Android / PWAの起動設定用) -->
-
-  <!-- ホーム画面追加時の動作、テーマカラー、アイコンを詳細定義 -->
-
-  <link rel="manifest" href="/manifest.json" />
-
-
-
-  <!-- 4. iOSのスタンドアローンモード設定 -->
-
-  <!-- ホーム画面から起動した際、Safariのツールバーを消す -->
-
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-
-  <meta name="apple-mobile-web-app-title" content="This's SUSHI" />
-
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-
-
-  <!-- 5. テーマカラー (アドレスバーやステータスバーの色) -->
-
-  <meta name="theme-color" content="#0b0b12" />       
-
 </head>
+    
 <body class="selection:bg-sushi-red selection:text-white relative">
 
     <!-- 3D Canvas Background -->
